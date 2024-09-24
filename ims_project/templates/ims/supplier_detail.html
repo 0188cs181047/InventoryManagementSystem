@@ -1,0 +1,46 @@
+{% extends "user/home.html" %}
+{% load crispy_forms_tags %}
+
+    {% block title %}<title>Supplier Detail</title>{% endblock title  %}
+
+
+    {% block body %}
+    <div class="container mt-4">
+        <h1>Supplier Details</h1>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Supplier Name</th>
+                    <th>Contact Name</th>
+                    <th>Phone Number</th>
+                    <th>Addredd</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sup in supplier %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ sup.supplier_name }}</td>
+                        <td>{{ sup.contact_name }}</td>
+                        <td>{{ sup.phone_number }}</td>
+                        <td>{{ sup.address }}</td>
+                        <td>
+                            <a href="{% url 'supplier_update' sup.id %}" class="btn btn-primary btn-sm">Update</a>
+                            <a href="{% url 'supplier_delete' sup.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this category?');">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">No Supplier found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{% url 'create_supplier' %}" class="btn btn-success">Add New Supplier</a>
+    </div>
+    {% endblock body %}
+    
+

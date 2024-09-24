@@ -1,0 +1,18 @@
+
+{% extends "user/home.html" %}
+{% load crispy_forms_tags %}
+    {% block title %}Conform Delete supplier{% endblock title %}
+
+    {% block body %}
+            <h1>Delete supplier</h1>
+            <p>Are you sure you want to delete the category "{{ supplier.supplier_name }}"?</p>
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Yes, delete</button>
+                <a href="{% url 'supplier_detail' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+    {% endblock body %}
+    
+
+
+

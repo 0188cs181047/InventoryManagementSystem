@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Purchase Order Detail</title>
+</head>
+<body>
+    <h1>Create Purchase Order Detail</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Purchase Order Detail</button>
+    </form>
+    <a href="">Back to Purchase Order Detail List</a>
+</body>
+</html>

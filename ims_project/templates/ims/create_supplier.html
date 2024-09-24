@@ -1,0 +1,15 @@
+{% extends "user/home.html" %}
+{% load crispy_forms_tags %}
+    {% block title %}Crate Supplier{% endblock title %}
+
+    {% block body %}
+    <h1>Create Supplier</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Create Supplier</button>
+    </form>
+    <a href="{% url 'supplier_detail' %}">Back to Supplier egory List</a>
+    {% endblock body %}
+    
+
