@@ -25,53 +25,101 @@ from django.contrib.auth.decorators import login_required
 import logging
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from django.views.decorators.cache import cache_page
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.core.cache import cache
 
 # Get an instance of the logger
 logger = logging.getLogger('custom_logger')
 
 
 
-# @login_required(login_url='token_obtain_pair')
-def create_category(request):
-    if request.method == "POST":
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('category_detail')  # Redirect to a list view or wherever needed
-    else:
-        form = CategoryForm()
-    return render(request, 'ims/create_category.html', {'form': form})
+@receiver(post_save, sender=Category)
+@receiver(post_delete, sender=Category)
+def clear_category_cache(sender, **kwargs):
+    cache.delete('all_categories')
 
+@api_view(['POST','GET'])
+@permission_classes([IsAuthenticated])
+def create_category(request):
+    try:
+
+        if request.method == "POST":
+            form = CategoryForm(request.POST)
+            if form.is_valid():
+                form.save()
+                logger.info("Category Data Inserted")
+                return redirect('category_detail')  # Redirect to a list view or wherever needed
+        else:
+            form = CategoryForm()
+        return render(request, 'ims/create_category.html', {'form': form})
+    
+
+    except Exception as e:
+        logger.error(e)
+    
 
 # @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated]) 
+# @permission_classes([IsAuthenticated])
+# @cache_page(60 * 15)
+# @login_required(login_url='token_obtain_pair')
+
+@api_view(['GET','POST'])
+@permission_classes([IsAuthenticated])
 def category_detail(request):
-    category = Category.objects.all()
-    return render(request, 'ims/category_detail.html', {'category': category})
+    try:
+        category = Category.objects.all()
+        logger.info("Show add Category Data")
+        return render(request, 'ims/category_detail.html', {'category': category})
+    except Exception as e:
+        logger.error(e)
 
 
-# @login_required(login_url='token_obtain_pair')
+# def category_detail(request):
+#     # Check if cached data exists
+#     categories = cache.get('all_categories')
+
+#     if not categories:
+#         # If not cached, retrieve from the database and cache it
+#         categories = Category.objects.all()
+#         cache.set('all_categories', categories, timeout=60*15)  # Cache for 15 minutes
+
+#     return render(request, 'ims/category_detail.html', {'category': categories})
+
+
+
+@permission_classes([IsAuthenticated])
 def category_update(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    if request.method == "POST":
-        form = CategoryForm(request.POST, instance=category)
-        if form.is_valid():
-            form.save()
-            return redirect('category_detail')
-    else:
-        form = CategoryForm(instance=category)
-    
-    return render(request, 'ims/category_update.html', {'form': form, 'category': category})
+    try:
+        category = get_object_or_404(Category, pk=pk)
+        if request.method == "POST":
+            form = CategoryForm(request.POST, instance=category)
+            if form.is_valid():
+                form.save()
+                logger.info("Category Data Updated Successfullly")
+                return redirect('category_detail')
+        else:
+            form = CategoryForm(instance=category)
+        
+        return render(request, 'ims/category_update.html', {'form': form, 'category': category})
+    except Exception as e:
+        logger.error(e)
 
-# @login_required(login_url='token_obtain_pair')
+
+
+@permission_classes([IsAuthenticated])
 def category_delete(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    if request.method == "POST":
-        category.delete()
-        return redirect('category_detail')
-    
-    return render(request, 'ims/category_confirm_delete.html', {'category': category})
-
+    try:
+        category = get_object_or_404(Category, pk=pk)
+        if request.method == "POST":
+            category.delete()
+            logger.info("Category Deleted Successfully")
+            return redirect('category_detail')
+        
+        return render(request, 'ims/category_confirm_delete.html', {'category': category})
+    except Exception as e:
+        logger.error(e)
 
 
 def create_supplier(request):
@@ -122,6 +170,7 @@ def create_product(request):
     else:
         form = ProductForm()
     return render(request, 'ims/create_product.html', {'form': form})
+
 
 def create_customer(request):
     if request.method == "POST":

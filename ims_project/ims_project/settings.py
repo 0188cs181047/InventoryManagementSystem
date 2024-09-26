@@ -15,29 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-    
-#     "loggers": {
-#         "django": {
-#             "handlers": ["console"],  # Reference the console handler
-#             "level": "DEBUG",
-#             "propagate": True,
-#         },
-#         "django.request": {
-#             "handlers": ["mail_admins"],
-#             "level": "ERROR",
-#             "propagate": False,
-#         },
-#         "myproject.custom": {
-#             "handlers": ["console", "mail_admins"],
-#             "level": "INFO",
-#             "filters": [],  # Remove the filter if not defined
-#         },
-#     },
-# }
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -126,10 +103,20 @@ WSGI_APPLICATION = 'ims_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'IMS_Database',
+        'USER': 'root',
+        'PASSWORD': '12345',
+        'HOST':'localhost',
     }
 }
 
@@ -177,3 +164,37 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'ims.log'), 
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'my_app_logger': { 
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend', 
+]

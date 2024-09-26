@@ -1,11 +1,13 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
+# manage.py
+
 import os
 import sys
 
+# Create logs directory if it doesn't exist
+if not os.path.exists('logs'):
+    os.makedirs('logs')
 
-def main():
-    """Run administrative tasks."""
+if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ims_project.settings')
     try:
         from django.core.management import execute_from_command_line
@@ -16,7 +18,3 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
-
-if __name__ == '__main__':
-    main()
