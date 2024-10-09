@@ -115,7 +115,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'IMS_Database',
         'USER': 'root',
-        'PASSWORD': '12345',
+        'PASSWORD': '',
         'HOST':'localhost',
     }
 }
