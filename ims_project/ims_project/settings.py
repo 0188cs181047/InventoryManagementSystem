@@ -114,8 +114,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'IMS_Database',
-        'USER': 'root',
-        'PASSWORD': '',
+        'USER': 'your user name',
+        'PASSWORD': 'password',
         'HOST':'localhost',
     }
 }
